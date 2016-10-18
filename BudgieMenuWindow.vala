@@ -110,25 +110,32 @@ public class BudgieMenuWindow : Gtk.Popover
     /* Reload menus, essentially. */
     public void refresh_tree()
     {
+        message("Tree refresh!");
         lock (reloading) {
             if (reloading) {
+                message("Already reloading..");
                 return;
             }
             reloading = true;
         }
+        message("Nuking content kids!");
         foreach (var child in content.get_children()) {
             child.destroy();
         }
+        message("Nuking category kids!");
         foreach (var child in categories.get_children()) {
             if (child != all_categories) {
                 SignalHandler.disconnect_by_func(child, (void*)on_mouse_enter, this);
                 child.destroy();
             }
         }
+        message("Disconnecting handler");
         SignalHandler.disconnect_by_func(tree, (void*)refresh_tree, this);
         this.tree = null;
-        Idle.add(()=> { 
+        Idle.add(()=> {
+            message("Set to load menus!");
             load_menus(null);
+            message("Loaded menus!");
             return false;
         });
         lock (reloading) {
