@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gdb --args ./CruftTest $*
+gdb --eval-command=run --args ./CruftTest $*
