@@ -129,7 +129,6 @@ public class BudgieMenuWindow : Gtk.Popover
         this.tree = null;
         Idle.add(()=> { 
             load_menus(null);
-            apply_scores();
             return false;
         });
         lock (reloading) {
@@ -360,7 +359,6 @@ public class BudgieMenuWindow : Gtk.Popover
         // load them in the background
         Idle.add(()=> {
             load_menus(null);
-            apply_scores();
             queue_resize();
             if (!get_realized()) {
                 realize();
@@ -373,7 +371,7 @@ public class BudgieMenuWindow : Gtk.Popover
     {
         switch (key) {
             case "menu-compact":
-                var compat_menu = false;
+                var compact_menu = false;
                 var vis = compact_menu;
                 categories_scroll.no_show_all = vis;
                 categories_scroll.set_visible(vis);

@@ -20,7 +20,7 @@ public class BudgieMenuApplet : Gtk.Window
 
     public BudgieMenuApplet()
     {
-        Object(uuid: uuid);
+        Object(type: Gtk.WindowType.TOPLEVEL);
 
         widget = new Gtk.ToggleButton();
         widget.relief = Gtk.ReliefStyle.NONE;
