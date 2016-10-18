@@ -78,6 +78,19 @@ public class BudgieMenuApplet : Gtk.Window
 public static void main(string[] args)
 {
     Gtk.init(ref args);
+    OptionContext ctx;
+
+    ctx = new OptionContext("- Budgie Menu");
+    ctx.set_help_enabled(true);
+    ctx.add_group(Gtk.get_option_group(false));
+
+    try {
+        ctx.parse(ref args);
+    } catch (Error e) {
+        stderr.printf("Error: %s\n", e.message);
+        return;
+    }
+
     var win = new BudgieMenuApplet();
     var settings = Gtk.Settings.get_default();
     settings.set("gtk-application-prefer-dark-theme", true);
