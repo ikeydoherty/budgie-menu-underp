@@ -59,6 +59,8 @@ public class BudgieMenuApplet : Gtk.Window
         popover.get_child().show_all();
 
         add(widget);
+        widget.halign = Gtk.Align.START;
+        widget.valign = Gtk.Align.START;
         show_all();
         layout.valign = Gtk.Align.CENTER;
         valign = Gtk.Align.FILL;
