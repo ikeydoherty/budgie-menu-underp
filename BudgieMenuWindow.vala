@@ -175,6 +175,9 @@ public class BudgieMenuWindow : Gtk.Popover
         // Load the tree for the first time
         if (tree == null) {
             tree = new GMenu.Tree(APPS_ID, GMenu.TreeFlags.SORT_DISPLAY_NAME);
+            if (tree == null) {
+                return;
+            }
 
             try {
                 tree.load_sync();
