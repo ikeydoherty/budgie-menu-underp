@@ -26,7 +26,6 @@ public class BudgieMenuApplet : Gtk.Window
         widget.relief = Gtk.ReliefStyle.NONE;
         img = new Gtk.Image.from_icon_name("view-grid-symbolic", Gtk.IconSize.INVALID);
         img.pixel_size = 32;
-        img.no_show_all = true;
 
         var layout = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
         layout.pack_start(img, false, false, 3);
@@ -80,6 +79,8 @@ public static void main(string[] args)
 {
     Gtk.init(ref args);
     var win = new BudgieMenuApplet();
+    var settings = Gtk.Settings.get_default();
+    settings.set("gtk-application-prefer-dark-theme", true);
     win.destroy.connect(Gtk.main_quit);
     win.set_position(Gtk.WindowPosition.CENTER);
     win.set_size_request(1024, 768);
