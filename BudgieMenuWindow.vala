@@ -105,8 +105,6 @@ public class BudgieMenuWindow : Gtk.Popover
 
     protected int icon_size = 24;
 
-    public unowned Settings settings { public get; public set; }
-
     private bool reloading = false;
 
     /* Reload menus, essentially. */
@@ -239,33 +237,6 @@ public class BudgieMenuWindow : Gtk.Popover
         i = t.get_int32();
     }
 
-    /* Apply "scores" to enable usage-sorting */
-    protected void apply_scores()
-    {
-        var scores = settings.get_value("app-scores");
-
-        HashTable<string,int> m = new HashTable<string,int>(str_hash, str_equal);
-
-        /* Prevent large loops by caching score items */
-        for (int i = 0; i < scores.n_children(); i++) {
-            var tupe = scores.get_child_value(i);
-            string dname; int score;
-            unwrap_score(tupe, out dname, out score);
-
-            m.insert(dname, score);
-        }
-
-        foreach (var sprog in content.get_children()) {
-            MenuButton child = (sprog as Gtk.Bin).get_child() as MenuButton;
-            var key = child.info.get_filename();
-            if (m.contains(key)) {
-                child.score = m.get(key);
-            }
-        }
-
-        content.invalidate_sort();
-    }
-
     protected Variant mktuple(string text, int val)
     {
         Variant l = new Variant.string(text);
@@ -299,18 +270,16 @@ public class BudgieMenuWindow : Gtk.Popover
             return;
         }
         var arr = new Variant.array(null, children);
-        settings.set_value("app-scores", arr);
-
     }
 
-    public BudgieMenuWindow(Settings? settings, Gtk.Widget? leparent)
+    public BudgieMenuWindow(Gtk.Widget? leparent)
     {
-        Object(settings: settings, relative_to: leparent);
+        Object(relative_to: leparent);
         get_style_context().add_class("budgie-menu");
         var master_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         add(master_layout);
 
-        icon_size = settings.get_int("menu-icons-size");
+        icon_size = 32;
 
         // search entry up north
         search_entry = new Gtk.SearchEntry();
@@ -363,7 +332,6 @@ public class BudgieMenuWindow : Gtk.Popover
         content.valign = Gtk.Align.START;
         content.set_placeholder(placeholder);
 
-        settings.changed.connect(on_settings_changed);
         on_settings_changed("menu-compact");
         on_settings_changed("menu-headers");
         on_settings_changed("menu-categories-hover");
@@ -405,13 +373,15 @@ public class BudgieMenuWindow : Gtk.Popover
     {
         switch (key) {
             case "menu-compact":
-                var vis = settings.get_boolean(key);
+                var compat_menu = false;
+                var vis = compact_menu;
                 categories_scroll.no_show_all = vis;
                 categories_scroll.set_visible(vis);
                 compact_mode = vis;
                 break;
             case "menu-headers":
-                if (settings.get_boolean(key)) {
+                bool set_headers = true;
+                if (set_headers) {
                     content.set_header_func(do_list_header);
                 } else {
                     content.set_header_func(null);
@@ -420,7 +390,8 @@ public class BudgieMenuWindow : Gtk.Popover
                 break;
             case "menu-categories-hover":
                 /* Category hover */
-                this.rollover_menus = settings.get_boolean(key);
+                bool rollover_menus = false;
+                this.rollover_menus = rollover_menus;
                 break;
             default:
                 // not interested
