@@ -28,7 +28,7 @@ public class CategoryButton : Gtk.RadioButton
             lab = new Gtk.Label(parent.get_name());
         } else {
             // Special case, "All"
-            lab = new Gtk.Label(_("All"));
+            lab = new Gtk.Label("All");
         }
         lab.halign = Gtk.Align.START;
         lab.valign = Gtk.Align.CENTER;
